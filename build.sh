@@ -1,4 +1,3 @@
-```bash
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -133,4 +132,3 @@ echo ""
 echo "=============================================="
 echo " BUILD SUCCESSFUL"
 echo "=============================================="
-```
