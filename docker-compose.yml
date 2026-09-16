@@ -1,0 +1,18 @@
+# This image builds the project and runs a headless self-check of the
+# non-UI layers (Database, Json, LearningEngine construction, Exporters).
+# The JavaFX UI is intentionally excluded — headless CI cannot render it.
+services:
+  aicsl-build:
+    image: eclipse-temurin:25-jdk
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: >
+      bash -lc "
+        apt-get update &&
+        apt-get install -y openjfx curl &&
+        mkdir -p lib &&
+        curl -fL -o lib/sqlite-jdbc.jar
+          https://github.com/xerial/sqlite-jdbc/releases/download/3.46.1.0/sqlite-jdbc-3.46.1.0.jar &&
+        JAVAFX=/usr/share/openjfx/lib bash build.sh
+      "

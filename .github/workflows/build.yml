@@ -1,0 +1,35 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Install JavaFX SDK
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjfx
+
+      - name: Download sqlite-jdbc
+        run: |
+          mkdir -p lib
+          curl -fL -o lib/sqlite-jdbc.jar \
+            https://github.com/xerial/sqlite-jdbc/releases/download/3.46.1.0/sqlite-jdbc-3.46.1.0.jar
+
+      - name: Compile
+        env:
+          JAVAFX: /usr/share/openjfx/lib
+        run: bash build.sh
