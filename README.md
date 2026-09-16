@@ -892,17 +892,6 @@ The goal is to create an architecture where the AI can continuously **research, 
 * [ ] Long-term topic evolution
 * [ ] Local AI model support
 
-## Phase 5 — Future
-
-* [ ] Plugin architecture
-* [ ] Multiple simultaneous learning agents
-* [ ] Agent collaboration
-* [ ] Research reports
-* [ ] Automatic citations
-* [ ] Knowledge versioning
-* [ ] Distributed learning
-* [ ] Optional cloud synchronization
-
 ---
 
 # 🧠 Future Vision
