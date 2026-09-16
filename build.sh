@@ -35,19 +35,21 @@ if [ ! -d "$LIB" ]; then
 fi
 
 # ------------------------------------------------
-# Locate dependencies
+# Dependencies
 # ------------------------------------------------
 
-SQLITE_JAR=$(find "$LIB" -maxdepth 1 -type f -name "sqlite-jdbc-*.jar" | head -n 1)
-SLF4J_JAR=$(find "$LIB" -maxdepth 1 -type f -name "slf4j-api-*.jar" | head -n 1)
+SQLITE_JAR="$LIB/sqlite-jdbc-3.42.0.0.jar"
+SLF4J_JAR="$LIB/slf4j-api-1.7.36.jar"
 
-if [ -z "$SQLITE_JAR" ]; then
-    echo "ERROR: SQLite JDBC JAR not found."
+if [ ! -f "$SQLITE_JAR" ]; then
+    echo "ERROR: SQLite JDBC JAR not found:"
+    echo "$SQLITE_JAR"
     exit 1
 fi
 
-if [ -z "$SLF4J_JAR" ]; then
-    echo "ERROR: SLF4J JAR not found."
+if [ ! -f "$SLF4J_JAR" ]; then
+    echo "ERROR: SLF4J JAR not found:"
+    echo "$SLF4J_JAR"
     exit 1
 fi
 
@@ -57,7 +59,7 @@ echo "  SQLite : $SQLITE_JAR"
 echo "  SLF4J  : $SLF4J_JAR"
 
 # ------------------------------------------------
-# Verify module names
+# Verify modules
 # ------------------------------------------------
 
 echo ""
@@ -72,14 +74,14 @@ jar --describe-module \
     --file "$SLF4J_JAR"
 
 # ------------------------------------------------
-# Clean build directory
+# Clean output
 # ------------------------------------------------
 
 rm -rf "$OUT"
 mkdir -p "$OUT"
 
 # ------------------------------------------------
-# Collect sources
+# Collect Java sources
 # ------------------------------------------------
 
 SOURCE_LIST=$(mktemp)
@@ -97,15 +99,19 @@ echo "Source files:"
 wc -l "$SOURCE_LIST"
 
 # ------------------------------------------------
-# Module path
+# Explicit module path
 #
 # IMPORTANT:
-# JavaFX + local dependency JARs must be on
-# the module path because module-info.java
-# uses JPMS requires declarations.
+# Do NOT use:
+#
+#   --module-path "$JAVAFX:$LIB"
+#
+# because scanning the whole lib directory can
+# cause duplicate JPMS module discovery with the
+# multi-release SQLite JDBC JAR.
 # ------------------------------------------------
 
-MODULE_PATH="$JAVAFX:$LIB"
+MODULE_PATH="$JAVAFX:$SQLITE_JAR:$SLF4J_JAR"
 
 echo ""
 echo "Module path:"
